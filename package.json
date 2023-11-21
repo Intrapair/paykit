@@ -2,13 +2,13 @@
   "name": "paykit",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.ts",
+  "main": "index.ts",
   "scripts": {
     "clean": "rm -rf node_modules && rm -rf packages/*/node_modules",
-    "format": "pnpm exec prettier --write \"src/**/*.ts\"",
-    "check-format": "pnpm exec prettier --check \"src/**/*.ts\"",
-    "generate:schema": "sh src/packages/wallet/generate-schema.sh",
-    "db:create-table": "ts-node src/packages/wallet/models/createTable.ts",
+    "format": "pnpm exec prettier --write \"**/*.ts\"",
+    "check-format": "pnpm exec prettier --check \"**/*.ts\"",
+    "generate:schema": "sh packages/wallet/generate-schema.sh",
+    "db:create-table": "ts-node packages/wallet/models/createTable.ts",
     "start:test:db": "cross-env MYSQL_TEST_DEBUG=true && pnpm mysql-test start --image mariadb:latest --externalPort 3310 && PAYKIT_DATABASE_URL=mysql://test-user:password@localhost:3310/test-db pnpm db:create-table",
     "stop:test:db": "pnpm mysql-test stop",
     "test": "pnpm start:test:db && cross-env PAYKIT_DATABASE_URL=mysql://test-user:password@localhost:3310/test-db node --experimental-vm-modules --no-warnings node_modules/jest/bin/jest.js -c=jest-esm.config.js --no-cache --detectOpenHandles --forceExit && pnpm stop:test:db"

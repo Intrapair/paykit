@@ -8,12 +8,17 @@ import db, { wallets, walletTransactions } from '../config/database.config';
  * @param transactionDetails details of the transaction
  * @returns boolean
  */
-export const credit = async (userId: string, amount: number, transactionId: string, transactionDetails: object = {}): Promise<boolean> => {
+export const credit = async (
+    userId: string,
+    amount: number,
+    transactionId: string,
+    transactionDetails: object = {}
+): Promise<boolean> => {
     // start db transaction
     return await db.tx(async (db) => {
         // get wallet
         const wallet = await wallets(db).findOne({ userId });
-        if(!wallet) {
+        if (!wallet) {
             throw new Error('Wallet not found');
         }
         // update wallet balance
@@ -35,7 +40,7 @@ export const credit = async (userId: string, amount: number, transactionId: stri
         await wallets(db).update({ id: wallet.id }, { balance: newBalance });
         return true;
     });
-}
+};
 
 /**
  * Revert a debit transaction and update wallet balance
@@ -46,15 +51,17 @@ export const revertDebit = async (transactionId: string): Promise<boolean> => {
     // start db transaction
     return await db.tx(async (db) => {
         // get wallet transaction
-        const transaction = await walletTransactions(db).findOne({ transactionId });
-        if(!transaction) {
+        const transaction = await walletTransactions(db).findOne({
+            transactionId,
+        });
+        if (!transaction) {
             throw new Error('Transaction not found');
         }
         const { amount, walletId } = transaction;
 
         // get wallet
         const wallet = await wallets(db).findOne({ id: walletId });
-        if(!wallet) {
+        if (!wallet) {
             throw new Error('Wallet not found');
         }
 
@@ -70,12 +77,12 @@ export const revertDebit = async (transactionId: string): Promise<boolean> => {
             status: 'completed',
             id: 0,
             amount,
-            transactionId: transactionId+'-revert',
-            transactionDetails: '{}'
+            transactionId: transactionId + '-revert',
+            transactionDetails: '{}',
         });
 
         // update user wallet balance
         await wallets(db).update({ id: wallet.id }, { balance: newBalance });
         return true;
     });
-}
+};

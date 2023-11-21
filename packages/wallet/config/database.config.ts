@@ -27,8 +27,7 @@ const db = createConnectionPool({
 export default db;
 
 // get typed table schema
-const { wallets, walletTransactions } =
-    tables<DatabaseSchema>({
-        serializeValue,
-    });
+const { wallets, walletTransactions } = tables<DatabaseSchema>({
+    serializeValue,
+});
 export { wallets, walletTransactions };

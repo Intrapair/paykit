@@ -4,22 +4,19 @@ import {
     walletModel,
     debitActions,
     creditActions,
-    walletActions
+    walletActions,
 } from './index';
 
 describe('Wallet Model', () => {
-
     test('should authenticate to db', async () => {
         const result = await walletModel.authenticate();
         expect(result).toBe(true);
     });
-
 });
 
 const userId = faker.string.uuid();
 
 describe('Wallet Actions', () => {
-
     test('should create wallet', async () => {
         const result = await walletActions.createWallet(userId);
         expect(result).toBe(true);
@@ -32,7 +29,11 @@ describe('Wallet Actions', () => {
     });
 
     test('should credit user wallet', async () => {
-        const result = await creditActions.credit(userId, 1000, faker.string.uuid());
+        const result = await creditActions.credit(
+            userId,
+            1000,
+            faker.string.uuid()
+        );
         expect(result).toBe(true);
     });
 
@@ -42,7 +43,11 @@ describe('Wallet Actions', () => {
     });
 
     test('should debit user wallet', async () => {
-        const result = await debitActions.initiateDebit(userId, 500, faker.string.uuid());
+        const result = await debitActions.initiateDebit(
+            userId,
+            500,
+            faker.string.uuid()
+        );
         expect(result).toBe(true);
     });
 
@@ -50,5 +55,4 @@ describe('Wallet Actions', () => {
         const result = await walletActions.getWalletBalance(userId);
         expect(result).toBe(500);
     });
-
 });

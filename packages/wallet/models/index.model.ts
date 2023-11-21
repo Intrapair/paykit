@@ -48,5 +48,5 @@ export const walletModel: IDBModel = {
         db.dispose().catch((ex) => {
             console.error(ex);
         });
-    }
+    },
 };

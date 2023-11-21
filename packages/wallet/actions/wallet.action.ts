@@ -1,6 +1,10 @@
-import WalletTransactions from "../__generated__/walletTransactions";
-import Wallets from "../__generated__/wallets";
-import db, { wallets, walletTransactions, greaterThan } from "../config/database.config";
+import WalletTransactions from '../__generated__/walletTransactions';
+import Wallets from '../__generated__/wallets';
+import db, {
+    wallets,
+    walletTransactions,
+    greaterThan,
+} from '../config/database.config';
 
 /**
  * Create wallet for user
@@ -9,39 +13,48 @@ import db, { wallets, walletTransactions, greaterThan } from "../config/database
  * @param balance The opening balance of the wallet. Default is 0
  * @returns boolean
  */
-export const createWallet = async (userId: string, currency: string = 'NGN', balance: number = 0): Promise<boolean> => {
+export const createWallet = async (
+    userId: string,
+    currency: string = 'NGN',
+    balance: number = 0
+): Promise<boolean> => {
     const wallet = {
         currency: currency.toUpperCase(),
         id: 0,
         userId,
-        balance
+        balance,
     };
     await wallets(db).insert(wallet);
     return true;
-}
+};
 
 /**
  * Get user wallet balance and top 10 transactions in DESC order
  * @param userId User uuid
  * @returns Array of wallet and transactions
  */
- export const getWallet = async (userId: string): Promise<(Wallets | WalletTransactions[])[]> => {
+export const getWallet = async (
+    userId: string
+): Promise<(Wallets | WalletTransactions[])[]> => {
     const wallet = await wallets(db).findOne({ userId });
-    if(!wallet) throw new Error('Wallet not found');
-    const transactions = await walletTransactions(db).find({ walletId: wallet.id }).orderByDesc('id').limit(10);
+    if (!wallet) throw new Error('Wallet not found');
+    const transactions = await walletTransactions(db)
+        .find({ walletId: wallet.id })
+        .orderByDesc('id')
+        .limit(10);
     return [wallet, transactions];
-}
+};
 
 /**
  * Get user wallet balance only
  * @param userId the unique id of the user
  * @returns wallet balance
  */
- export const getWalletBalance = async (userId: string) => {
+export const getWalletBalance = async (userId: string) => {
     const wallet = await wallets(db).findOne({ userId });
-    if(!wallet) throw new Error('Wallet not found');
+    if (!wallet) throw new Error('Wallet not found');
     return wallet.balance;
-}
+};
 
 /**
  * Get user wallet transactions in DESC order with pagination support
@@ -50,13 +63,17 @@ export const createWallet = async (userId: string, currency: string = 'NGN', bal
  * @param limit the maximum number of transactions to return. Default is 10
  * @returns Array of transactions
  */
- export const getWalletTransactions = async (userId: string, lastId: number = 0, limit: number = 10): Promise<WalletTransactions[]> => {
+export const getWalletTransactions = async (
+    userId: string,
+    lastId: number = 0,
+    limit: number = 10
+): Promise<WalletTransactions[]> => {
     const wallet = await wallets(db).findOne({ userId });
-    if(!wallet) throw new Error('Wallet not found');
+    if (!wallet) throw new Error('Wallet not found');
     return await walletTransactions(db)
         .find({
             ...(lastId ? { id: greaterThan(lastId) } : {}),
         })
         .orderByDesc('id')
         .limit(limit);
-}
+};

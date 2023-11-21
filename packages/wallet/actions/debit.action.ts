@@ -7,14 +7,18 @@ import db, { wallets, walletTransactions } from '../config/database.config';
  * @param transactionId ID of the transaction
  * @returns boolean
  */
-export const initiateDebit = async (userId: string, amount: number, transactionId: string): Promise<boolean> => {
+export const initiateDebit = async (
+    userId: string,
+    amount: number,
+    transactionId: string
+): Promise<boolean> => {
     return await db.tx(async (db) => {
         // get wallet
         const wallet = await wallets(db).findOne({ userId });
-        if(!wallet) {
+        if (!wallet) {
             throw new Error('Wallet not found');
         }
-        if(wallet.balance < amount) {
+        if (wallet.balance < amount) {
             throw new Error('Insufficient wallet balance');
         }
         // calculate new balance
@@ -35,7 +39,7 @@ export const initiateDebit = async (userId: string, amount: number, transactionI
         await wallets(db).update({ id: wallet.id }, { balance: newBalance });
         return true;
     });
-}
+};
 
 /**
  * Complete a debit transaction and update transaction details
@@ -43,14 +47,20 @@ export const initiateDebit = async (userId: string, amount: number, transactionI
  * @param transactionDetails details of the transaction
  * @returns boolean
  */
-export const completeDebit = async (transactionId: string, transactionDetails: object = {}): Promise<boolean> => {
+export const completeDebit = async (
+    transactionId: string,
+    transactionDetails: object = {}
+): Promise<boolean> => {
     const transaction = await walletTransactions(db).findOne({ transactionId });
-    if(!transaction) {
+    if (!transaction) {
         throw new Error('Transaction not found');
     }
-    await walletTransactions(db).update({ transactionId }, {
-        transactionDetails: JSON.stringify(transactionDetails),
-        status: 'completed',
-    });
+    await walletTransactions(db).update(
+        { transactionId },
+        {
+            transactionDetails: JSON.stringify(transactionDetails),
+            status: 'completed',
+        }
+    );
     return true;
-}
+};
