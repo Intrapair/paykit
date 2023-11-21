@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "rootDirs": ["src"],
+    "outDir": "./dist",
+    "lib": ["es2020"],
+    "target": "es2020",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "types": ["node"],
+    "typeRoots": [
+      "./src/types",
+      "./node_modules/@types",
+    ],
+  },
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  },
+  "exclude": [
+    "**/*.test.ts"
+  ]
+}
