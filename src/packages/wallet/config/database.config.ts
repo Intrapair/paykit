@@ -9,6 +9,7 @@ export { sql, greaterThan };
 // create db connection pool
 // const startTimes = new Map<SQLQuery, number>();
 const db = createConnectionPool({
+    connectionString: process.env.PAYKIT_DATABASE_URL,
     // onQueryStart: (query) => {
     //     startTimes.set(query, Date.now());
     //   },

@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS walletTransactions (
     newBalance DOUBLE NOT NULL,
     transactionId VARCHAR(255) NOT NULL,
     transactionDetails JSON NOT NULL,
-    status ENUM('pending', 'success') NOT NULL DEFAULT 'pending',
+    status ENUM('pending', 'completed') NOT NULL DEFAULT 'pending',
     createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updatedAt DATETIME ON UPDATE CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),

@@ -14,6 +14,9 @@ export const initiateDebit = async (userId: string, amount: number, transactionI
         if(!wallet) {
             throw new Error('Wallet not found');
         }
+        if(wallet.balance < amount) {
+            throw new Error('Insufficient wallet balance');
+        }
         // calculate new balance
         const newBalance = parseFloat(String(wallet.balance - amount));
 

@@ -1,5 +1,5 @@
-# paykit
-
+# Paykit
+Paykit is a comprehensive module that provides wallet management and payment gateway interface on top of Flutterwave and paystack. It is designed to simplify and streamline payment processes within your application or system. With Paykit, users can easily manage their digital wallets and perform secure transactions using various payment gateway.
 
 
 

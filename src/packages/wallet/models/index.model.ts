@@ -9,8 +9,10 @@ const __dirname = path.dirname(__filename);
 interface IDBModel {
     authenticate(): Promise<boolean>;
     setup(): Promise<void>;
+    disconnect(): Promise<void>;
 }
-const model: IDBModel = {
+
+export const walletModel: IDBModel = {
     async authenticate(): Promise<boolean> {
         return new Promise((resolve, reject) => {
             // authenticate db
@@ -20,7 +22,7 @@ const model: IDBModel = {
             resolve(true);
         });
     },
-    async setup() {
+    async setup(): Promise<void> {
         fs.readdir(__dirname)
             .then((files) =>
                 files.filter((file) => file.split('.').pop() === 'sql')
@@ -42,6 +44,9 @@ const model: IDBModel = {
                 console.error(error);
             });
     },
+    async disconnect() {
+        db.dispose().catch((ex) => {
+            console.error(ex);
+        });
+    }
 };
-
-export default model;
