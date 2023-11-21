@@ -1,17 +1,17 @@
 {
   "compilerOptions": {
     "rootDirs": ["src"],
-    "outDir": "./dist",
+    "outDir": "./build",
     "lib": ["es2020"],
-    "target": "es2020",
+    "target": "es2019",
     "module": "ESNext",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "types": ["node"],
     "typeRoots": [
-      "./src/types",
       "./node_modules/@types",
     ],
+    "forceConsistentCasingInFileNames": true,
   },
   "ts-node": {
     "esm": true,

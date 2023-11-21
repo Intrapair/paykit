@@ -6,6 +6,20 @@ The module consists of 3 main packages:
 - Paystack
 - Flutterwave
 
+## Installation
+- We do not intend to publish this package to npm yet. To install, clone the repository and run `pnpm install` to install all dependencies.
+- To install as an npm package, run `pnpm add git+ssh://git@github.com:Intrapair/paykit.git` Note that this is highly not recommended for security reasons
+
+## Requirements
+- NodeJS runtime
+- PNPM package manager
+- MariaDB / MySQL Database (Powers wallet package)
+
+## Features
+- Completely written in [Typescript](https://typescriptlang.org/)
+- [@databases](https://www.atdatabases.org/) SQL Query builder
+- [Jest](https://jestjs.io) for unit test
+  
 # Wallet
 This package enables you to create and manage digital wallets securely. It includes features such as wallet creation, balance management, and transaction history.
 
