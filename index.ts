@@ -1,5 +1,7 @@
 import * as wallet from './packages/wallet';
+import * as Flutterwave from './packages/flutterwave';
 
-export const Paykit = {
+export default {
     wallet,
+    Flutterwave,
 };

@@ -1,6 +1,6 @@
 {
   "name": "paykit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "build/index.js",
   "scripts": {
@@ -40,6 +40,7 @@
     "@databases/mysql": "^6.0.0",
     "@databases/mysql-test": "^4.0.2",
     "@databases/mysql-typed": "^1.0.0",
+    "axios": "^1.6.2",
     "dotenv": "^16.3.1"
   },
   "type": "module"
