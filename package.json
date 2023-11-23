@@ -1,7 +1,7 @@
 {
   "name": "paykit",
-  "version": "1.0.3",
-  "description": "",
+  "version": "1.0.4",
+  "description": "With Paykit, you can easily manage digital wallets and perform secure transactions using various payment gateway",
   "main": "index.ts",
   "scripts": {
     "clean": "rm -rf node_modules && rm -rf packages/*/node_modules",
@@ -18,7 +18,14 @@
     "type": "git",
     "url": "git+https://github.com/Intrapair/paykit.git"
   },
-  "keywords": [],
+  "keywords": [
+    "paykit",
+    "wallet",
+    "payment",
+    "gateway",
+    "flutterwave",
+    "paystack"
+  ],
   "author": "Intrapair <hello@intrapair.com>",
   "license": "ISC",
   "bugs": {
