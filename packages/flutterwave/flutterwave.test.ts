@@ -2,7 +2,10 @@ import { describe, it, expect, jest, test, afterAll } from '@jest/globals';
 import { faker } from '@faker-js/faker';
 import Flutterwave from './index';
 
-const fluterwave = new Flutterwave(String(process.env.PAYKIT_FLW_PUBLIC_KEY), String(process.env.PAYKIT_FLW_SECRET_KEY))
+const fluterwave = new Flutterwave(
+    String(process.env.PAYKIT_FLW_PUBLIC_KEY),
+    String(process.env.PAYKIT_FLW_SECRET_KEY)
+);
 
 describe('Collection', () => {
     test('should generate a payment link', async () => {
@@ -25,4 +28,3 @@ describe('Collection', () => {
         expect(data.status).toBe('success');
     });
 });
-

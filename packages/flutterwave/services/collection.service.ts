@@ -2,7 +2,6 @@ import { IApiKeys, IPaymentLinkPayload } from '../types';
 import apiKit from '../utils/apiKit';
 
 export default class Collection {
-
     private apiKeys: IApiKeys = {
         publicKey: '',
         secretKey: '',
@@ -20,5 +19,4 @@ export default class Collection {
             headers: { ...this.headers },
         });
     }
-
 }

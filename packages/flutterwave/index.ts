@@ -1,7 +1,6 @@
-import { IApiKeys } from "./types";
-import Collection from "./services/collection.service";
+import { IApiKeys } from './types';
+import Collection from './services/collection.service';
 export default class Flutterwave {
-
     private config: IApiKeys = {
         publicKey: '',
         secretKey: '',
@@ -14,5 +13,4 @@ export default class Flutterwave {
         this.config.secretKey = secretKey;
         this.Collection = new Collection(this.config);
     }
-
 }
