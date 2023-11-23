@@ -11,7 +11,7 @@
     "typeRoots": [
       "./node_modules/@types",
     ],
-    "forceConsistentCasingInFileNames": true,
+    "forceConsistentCasingInFileNames": true
   },
   "ts-node": {
     "esm": true,

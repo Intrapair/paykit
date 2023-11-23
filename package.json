@@ -1,8 +1,8 @@
 {
   "name": "paykit",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "",
-  "main": "build/index.js",
+  "main": "index.ts",
   "scripts": {
     "clean": "rm -rf node_modules && rm -rf packages/*/node_modules",
     "format": "pnpm exec prettier --write \"**/*.ts\"",
