@@ -2,7 +2,7 @@
   "name": "paykit",
   "version": "1.0.4",
   "description": "With Paykit, you can easily manage digital wallets and perform secure transactions using various payment gateway",
-  "main": "index.ts",
+  "main": "build/index.js",
   "scripts": {
     "clean": "rm -rf node_modules && rm -rf packages/*/node_modules",
     "format": "pnpm exec prettier --write \"**/*.ts\"",
