@@ -1,5 +1,5 @@
 import * as wallet from './packages/wallet';
-import * as Flutterwave from './packages/flutterwave';
+import { Flutterwave } from './packages/flutterwave';
 
 export default {
     wallet,
