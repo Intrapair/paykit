@@ -1,4 +1,4 @@
-import { IApiKeys } from './types';
+import { IApiKeys } from './flutterwave.types';
 import Collection from './services/collection.service';
 export default class Flutterwave {
     private config: IApiKeys = {

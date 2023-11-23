@@ -1,4 +1,4 @@
-import { IApiKeys, IPaymentLinkPayload } from '../types';
+import { IApiKeys, IPaymentLinkPayload } from '../flutterwave.types';
 import apiKit from '../utils/apiKit';
 
 export default class Collection {
