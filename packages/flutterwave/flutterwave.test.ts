@@ -1,6 +1,6 @@
 import { describe, it, expect, jest, test, afterAll } from '@jest/globals';
 import { faker } from '@faker-js/faker';
-import Flutterwave from './index';
+import { Flutterwave } from './index';
 
 const fluterwave = new Flutterwave(
     String(process.env.PAYKIT_FLW_PUBLIC_KEY),
