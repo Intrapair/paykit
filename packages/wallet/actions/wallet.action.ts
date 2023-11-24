@@ -80,7 +80,6 @@ export const getWalletTransactions = async (
         })
         .orderByDesc('id')
         .limit(limit);
-
     transactions = transactions.map((row: any) => {
         let d = { ...row, transactionDetails: JSON.parse(row.transactionDetails) };
         return d;
