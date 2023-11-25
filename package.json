@@ -12,7 +12,8 @@
     "start:test:db": "cross-env MYSQL_TEST_DEBUG=true && pnpm mysql-test start --image mariadb:latest --externalPort 3310 && PAYKIT_DATABASE_URL=mysql://test-user:password@localhost:3310/test-db pnpm db:create-table",
     "stop:test:db": "pnpm mysql-test stop",
     "test": "pnpm start:test:db && cross-env PAYKIT_DATABASE_URL=mysql://test-user:password@localhost:3310/test-db node --experimental-vm-modules --no-warnings node_modules/jest/bin/jest.js -c=jest-esm.config.js --no-cache --detectOpenHandles --forceExit && pnpm stop:test:db",
-    "build": "rm -rf build && npx tsc"
+    "build": "rm -rf build && npx tsc",
+    "test:flw": "ts-node packages/flutterwave/test.ts"
   },
   "repository": {
     "type": "git",

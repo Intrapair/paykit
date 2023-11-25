@@ -19,4 +19,10 @@ export interface IPaymentLinkPayload {
     redirect_url: string;
 }
 
+export interface IRatesPayload { 
+    sourceCurrency: string; 
+    destinationCurrency: string; 
+    amount?: number 
+}
+
 export default {};

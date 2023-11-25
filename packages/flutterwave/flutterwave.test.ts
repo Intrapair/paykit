@@ -1,10 +1,11 @@
+import 'dotenv/config';
 import { describe, it, expect, jest, test, afterAll } from '@jest/globals';
 import { faker } from '@faker-js/faker';
 import { Flutterwave } from './index';
 
 const fluterwave = new Flutterwave(
-    String(process.env.PAYKIT_FLW_PUBLIC_KEY),
-    String(process.env.PAYKIT_FLW_SECRET_KEY)
+    String(process.env.PAYKIT_FLUTTERWAVE_PUBLIC_KEY),
+    String(process.env.PAYKIT_FLUTTERWAVE_SECRET_KEY)
 );
 
 describe('Collection', () => {
@@ -26,5 +27,17 @@ describe('Collection', () => {
         });
         expect(data).toHaveProperty('status');
         expect(data.status).toBe('success');
+    });
+});
+
+describe('Transfer', () => {
+    test('should get NGN to USD rate', async () => {
+        const { data } = await fluterwave.Transfer.getRate({
+            sourceCurrency: 'NGN',
+            destinationCurrency: 'USD'
+        });
+        expect(data).toHaveProperty('status');
+        expect(data.status).toBe('success');
+        console.log(data.data.rate)
     });
 });
