@@ -4,10 +4,11 @@ import db, { wallets, walletTransactions } from '../config/database.config';
  * @param userId unique id of the user
  * @param amount amount to be credited
  * @param transactionId ID of the transaction
+ * @param narration short description of the transaction
  * @param transactionDetails details of the transaction
  * @returns boolean
  */
-export const credit = async (userId, amount, transactionId, transactionDetails = {}) => {
+export const credit = async (userId, amount, transactionId, narration, transactionDetails = {}) => {
     // start db transaction
     return await db.tx(async (db) => {
         // get wallet
@@ -25,6 +26,7 @@ export const credit = async (userId, amount, transactionId, transactionDetails =
             walletId: wallet.id,
             transactionDetails: JSON.stringify(transactionDetails),
             status: 'completed',
+            narration: narration || `Wallet credit of ${amount}`,
             id: 0,
             amount,
             transactionId,
@@ -64,6 +66,7 @@ export const revertDebit = async (transactionId) => {
             newBalance: newBalance,
             walletId: wallet.id,
             status: 'completed',
+            narration: `Revert of ${transaction.narration}`,
             id: 0,
             amount,
             transactionId: transactionId + '-revert',

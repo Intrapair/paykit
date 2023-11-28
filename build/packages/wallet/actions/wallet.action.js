@@ -25,10 +25,17 @@ export const getWallet = async (userId) => {
     const wallet = await wallets(db).findOne({ userId });
     if (!wallet)
         throw new Error('Wallet not found');
-    const transactions = await walletTransactions(db)
+    let transactions = await walletTransactions(db)
         .find({ walletId: wallet.id })
         .orderByDesc('id')
         .limit(10);
+    transactions = transactions.map((row) => {
+        let d = {
+            ...row,
+            transactionDetails: JSON.parse(row.transactionDetails),
+        };
+        return d;
+    });
     return [wallet, transactions];
 };
 /**
@@ -53,10 +60,18 @@ export const getWalletTransactions = async (userId, lastId = 0, limit = 10) => {
     const wallet = await wallets(db).findOne({ userId });
     if (!wallet)
         throw new Error('Wallet not found');
-    return await walletTransactions(db)
+    let transactions = await walletTransactions(db)
         .find({
         ...(lastId ? { id: greaterThan(lastId) } : {}),
     })
         .orderByDesc('id')
         .limit(limit);
+    transactions = transactions.map((row) => {
+        let d = {
+            ...row,
+            transactionDetails: JSON.parse(row.transactionDetails),
+        };
+        return d;
+    });
+    return transactions;
 };
