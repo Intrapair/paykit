@@ -8,54 +8,54 @@
 /* eslint-disable */
 // tslint:disable
 
-import Wallets from './wallets'
+import Wallets from './wallets';
 
 interface WalletTransactions {
-  amount: number
-  /**
-   * @default current_timestamp()
-   */
-  createdAt: (string | Date)
-  id: number & {readonly __brand?: 'walletTransactions_id'}
-  narration: string
-  newBalance: number
-  previousBalance: number
-  /**
-   * @default 'pending'
-   */
-  status: ("pending" | "completed")
-  transactionDetails: unknown
-  transactionId: string
-  transactionType: ("credit" | "debit")
-  /**
-   * @default current_timestamp()
-   */
-  updatedAt: (string | Date)
-  walletId: Wallets['id']
+    amount: number;
+    /**
+     * @default current_timestamp()
+     */
+    createdAt: string | Date;
+    id: number & { readonly __brand?: 'walletTransactions_id' };
+    narration: string;
+    newBalance: number;
+    previousBalance: number;
+    /**
+     * @default 'pending'
+     */
+    status: 'pending' | 'completed';
+    transactionDetails: unknown;
+    transactionId: string;
+    transactionType: 'credit' | 'debit';
+    /**
+     * @default current_timestamp()
+     */
+    updatedAt: string | Date;
+    walletId: Wallets['id'];
 }
 export default WalletTransactions;
 
 interface WalletTransactions_InsertParameters {
-  amount: number
-  /**
-   * @default current_timestamp()
-   */
-  createdAt?: (string | Date)
-  id: number & {readonly __brand?: 'walletTransactions_id'}
-  narration: string
-  newBalance: number
-  previousBalance: number
-  /**
-   * @default 'pending'
-   */
-  status?: ("pending" | "completed")
-  transactionDetails: unknown
-  transactionId: string
-  transactionType: ("credit" | "debit")
-  /**
-   * @default current_timestamp()
-   */
-  updatedAt?: (string | Date)
-  walletId: Wallets['id']
+    amount: number;
+    /**
+     * @default current_timestamp()
+     */
+    createdAt?: string | Date;
+    id: number & { readonly __brand?: 'walletTransactions_id' };
+    narration: string;
+    newBalance: number;
+    previousBalance: number;
+    /**
+     * @default 'pending'
+     */
+    status?: 'pending' | 'completed';
+    transactionDetails: unknown;
+    transactionId: string;
+    transactionType: 'credit' | 'debit';
+    /**
+     * @default current_timestamp()
+     */
+    updatedAt?: string | Date;
+    walletId: Wallets['id'];
 }
-export type {WalletTransactions_InsertParameters}
+export type { WalletTransactions_InsertParameters };

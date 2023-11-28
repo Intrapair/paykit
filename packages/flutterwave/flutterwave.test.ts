@@ -34,10 +34,10 @@ describe('Transfer', () => {
     test('should get NGN to USD rate', async () => {
         const { data } = await fluterwave.Transfer.getRate({
             sourceCurrency: 'NGN',
-            destinationCurrency: 'USD'
+            destinationCurrency: 'USD',
         });
         expect(data).toHaveProperty('status');
         expect(data.status).toBe('success');
-        console.log(data.data.rate)
+        console.log(data.data.rate);
     });
 });

@@ -15,13 +15,14 @@ export default class Transfer {
     }
 
     async getRate(data: IRatesPayload) {
-        const {
-            sourceCurrency, 
-            destinationCurrency, 
-            amount
-        } = data;
-        return await apiKit.get(`/transfers/rates?source_currency=${sourceCurrency}&destination_currency=${destinationCurrency}&amount=${amount || 50}`, {
-            headers: { ...this.headers },
-        });
+        const { sourceCurrency, destinationCurrency, amount } = data;
+        return await apiKit.get(
+            `/transfers/rates?source_currency=${sourceCurrency}&destination_currency=${destinationCurrency}&amount=${
+                amount || 50
+            }`,
+            {
+                headers: { ...this.headers },
+            }
+        );
     }
 }

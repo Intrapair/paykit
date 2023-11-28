@@ -43,7 +43,10 @@ export const getWallet = async (
         .orderByDesc('id')
         .limit(10);
     transactions = transactions.map((row: any) => {
-        let d = { ...row, transactionDetails: JSON.parse(row.transactionDetails) };
+        let d = {
+            ...row,
+            transactionDetails: JSON.parse(row.transactionDetails),
+        };
         return d;
     });
     return [wallet, transactions];
@@ -81,7 +84,10 @@ export const getWalletTransactions = async (
         .orderByDesc('id')
         .limit(limit);
     transactions = transactions.map((row: any) => {
-        let d = { ...row, transactionDetails: JSON.parse(row.transactionDetails) };
+        let d = {
+            ...row,
+            transactionDetails: JSON.parse(row.transactionDetails),
+        };
         return d;
     });
     return transactions;

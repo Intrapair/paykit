@@ -3,4 +3,4 @@ dist
 coverage
 node_modules
 *.log
-src/wallet/__generated__
+packages/wallet/__generated__
