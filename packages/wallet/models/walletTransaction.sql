@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS walletTransactions (
     transactionType ENUM('credit', 'debit') NOT NULL,
     previousBalance DOUBLE NOT NULL,
     newBalance DOUBLE NOT NULL,
+    narration VARCHAR(255) NOT NULL,
     transactionId VARCHAR(255) NOT NULL,
     transactionDetails JSON NOT NULL,
     status ENUM('pending', 'completed') NOT NULL DEFAULT 'pending',

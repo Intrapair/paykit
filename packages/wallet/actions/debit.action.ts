@@ -5,12 +5,14 @@ import db, { wallets, walletTransactions } from '../config/database.config';
  * @param userId the unique id of the user
  * @param amount amount to be debited
  * @param transactionId ID of the transaction
+ * @param narration short description of the transaction
  * @returns boolean
  */
 export const initiateDebit = async (
     userId: string,
     amount: number,
-    transactionId: string
+    transactionId: string,
+    narration?: string
 ): Promise<boolean> => {
     return await db.tx(async (db) => {
         // get wallet
@@ -31,6 +33,7 @@ export const initiateDebit = async (
             newBalance: newBalance,
             walletId: wallet.id,
             transactionDetails: '{}',
+            narration: narration || `Wallet debit of ${amount}`,
             id: 0,
             amount,
             transactionId,
