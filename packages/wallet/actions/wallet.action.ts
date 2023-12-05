@@ -79,6 +79,7 @@ export const getWalletTransactions = async (
     if (!wallet) throw new Error('Wallet not found');
     let transactions = await walletTransactions(db)
         .find({
+            walletId: wallet.id,
             ...(lastId ? { id: greaterThan(lastId) } : {}),
         })
         .orderByDesc('id')
