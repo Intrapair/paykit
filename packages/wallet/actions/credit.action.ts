@@ -34,7 +34,8 @@ export const credit = async (
             walletId: wallet.id,
             transactionDetails: JSON.stringify(transactionDetails),
             status: 'completed',
-            narration: narration || `Wallet credit of ${wallet.currency}${amount}`,
+            narration:
+                narration || `Wallet credit of ${wallet.currency}${amount}`,
             id: 0,
             amount,
             transactionId,
