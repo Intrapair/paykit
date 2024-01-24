@@ -55,4 +55,13 @@ describe('Wallet Actions', () => {
         const result = await walletActions.getWalletBalance(userId);
         expect(result).toBe(500);
     });
+
+    test('should debit user wallet with 100', async () => {
+        const result = await debitActions.debitWallet(
+            userId,
+            100,
+            faker.string.uuid()
+        );
+        expect(result).toBe(true);
+    });
 });
