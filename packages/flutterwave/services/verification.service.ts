@@ -59,14 +59,9 @@ export default class Verification {
     }
 
     async bankAccount(payload: BankAccountPayload) {
-        try {
-            return await apiKit.post<BankAccountResponse>('/accounts/resolve', { account_number: '2209214163', account_bank: '057' }, {
-                headers: { ...this.headers },
-            });
-        } catch(error) {
-            console.log(error);
-            throw new Error(error);
-        }
+        return await apiKit.post<BankAccountResponse>('/accounts/resolve', payload, {
+            headers: { ...this.headers },
+        });
     }
 
     async transaction(transaction_id: string) {
