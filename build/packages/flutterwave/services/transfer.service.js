@@ -15,4 +15,9 @@ export default class Transfer {
             headers: { ...this.headers },
         });
     }
+    async getBanks(bank = 'NG') {
+        return await apiKit.get(`/banks/${bank}`, {
+            headers: { ...this.headers },
+        });
+    }
 }
