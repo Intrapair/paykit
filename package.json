@@ -1,6 +1,6 @@
 {
   "name": "paykit",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "With Paykit, you can easily manage digital wallets and perform secure transactions using various payment gateway",
   "main": "build/index.js",
   "scripts": {
