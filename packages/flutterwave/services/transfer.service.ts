@@ -23,7 +23,7 @@ export default class Transfer {
         const { sourceCurrency, destinationCurrency, amount } = data;
         return await apiKit.get(
             `/transfers/rates?source_currency=${sourceCurrency}&destination_currency=${destinationCurrency}&amount=${
-                amount || 50
+                amount || 1
             }`,
             {
                 headers: { ...this.headers },
