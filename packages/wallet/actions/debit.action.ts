@@ -106,7 +106,8 @@ export const debitWallet = async (
             newBalance: newBalance,
             walletId: wallet.id,
             transactionDetails: JSON.stringify(transactionDetails),
-            narration: narration || `Wallet debit of ${wallet.currency}${amount}`,
+            narration:
+                narration || `Wallet debit of ${wallet.currency}${amount}`,
             status: 'completed',
             id: 0,
         });

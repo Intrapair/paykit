@@ -4,7 +4,7 @@ type RatesPayload = {
     sourceCurrency: string;
     destinationCurrency: string;
     amount?: number;
-}
+};
 
 export default class Transfer {
     private apiKeys: ApiKeys = {
@@ -32,12 +32,8 @@ export default class Transfer {
     }
 
     async getBanks(bank: string = 'NG') {
-        return await apiKit.get(
-            `/banks/${bank}`,
-            {
-                headers: { ...this.headers },
-            }
-        );
+        return await apiKit.get(`/banks/${bank}`, {
+            headers: { ...this.headers },
+        });
     }
-
 }

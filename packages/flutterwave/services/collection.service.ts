@@ -14,15 +14,15 @@ type PaymentLinkPayload = {
         logo: string;
     };
     redirect_url: string;
-}
+};
 
 type PaymentLinkResponse = {
     status: string;
     message: string;
     data: {
         link: string;
-    }
-}
+    };
+};
 export default class Collection {
     private apiKeys: ApiKeys = {
         publicKey: '',

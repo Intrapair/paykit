@@ -51,8 +51,8 @@ describe('Transfer', () => {
 describe('Verification', () => {
     test('verify bank account', async () => {
         const { data } = await flutterwave.Verification.bankAccount({
-            account_number: "2209214163",
-            account_bank: "057"
+            account_number: '2209214163',
+            account_bank: '057',
         });
         expect(data).toHaveProperty('status');
         expect(data.status).toBe('success');
