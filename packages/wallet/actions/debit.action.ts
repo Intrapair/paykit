@@ -12,7 +12,8 @@ export const initiateDebit = async (
     userId: string,
     amount: number,
     transactionId: string,
-    narration?: string
+    narration?: string,
+    transactionDetails: { [key: string]: any } = {}
 ): Promise<boolean> => {
     return await db.tx(async (db) => {
         // get wallet
@@ -32,7 +33,7 @@ export const initiateDebit = async (
             previousBalance: wallet.balance,
             newBalance: newBalance,
             walletId: wallet.id,
-            transactionDetails: '{}',
+            transactionDetails: JSON.stringify(transactionDetails),
             narration:
                 narration || `Wallet debit of ${wallet.currency}${amount}`,
             id: 0,
@@ -81,7 +82,8 @@ export const debitWallet = async (
     userId: string,
     amount: number,
     transactionId: string,
-    narration?: string
+    narration?: string,
+    transactionDetails: { [key: string]: any } = {}
 ): Promise<boolean> => {
     return await db.tx(async (db) => {
         // get wallet
@@ -97,17 +99,16 @@ export const debitWallet = async (
 
         // create wallet history for the new transaction
         await walletTransactions(db).insert({
+            amount,
+            transactionId,
             transactionType: 'debit',
             previousBalance: wallet.balance,
             newBalance: newBalance,
             walletId: wallet.id,
-            transactionDetails: '{}',
-            narration:
-                narration || `Wallet debit of ${wallet.currency}${amount}`,
+            transactionDetails: JSON.stringify(transactionDetails),
+            narration: narration || `Wallet debit of ${wallet.currency}${amount}`,
             status: 'completed',
             id: 0,
-            amount,
-            transactionId
         });
         // update user wallet balance
         await wallets(db).update({ id: wallet.id }, { balance: newBalance });
