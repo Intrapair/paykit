@@ -7,7 +7,7 @@ import db, { wallets, walletTransactions } from '../config/database.config';
  * @param narration short description of the transaction
  * @returns boolean
  */
-export const initiateDebit = async (userId, amount, transactionId, narration) => {
+export const initiateDebit = async (userId, amount, transactionId, narration, transactionDetails = {}) => {
     return await db.tx(async (db) => {
         // get wallet
         const wallet = await wallets(db).findOne({ userId });
@@ -25,7 +25,8 @@ export const initiateDebit = async (userId, amount, transactionId, narration) =>
             previousBalance: wallet.balance,
             newBalance: newBalance,
             walletId: wallet.id,
-            transactionDetails: '{}',
+            walletLabel: wallet.label,
+            transactionDetails: JSON.stringify(transactionDetails),
             narration: narration || `Wallet debit of ${wallet.currency}${amount}`,
             id: 0,
             amount,
@@ -61,7 +62,7 @@ export const completeDebit = async (transactionId, transactionDetails = {}) => {
  * @param narration short description of the transaction
  * @returns boolean
  */
-export const debitWallet = async (userId, amount, transactionId, narration) => {
+export const debitWallet = async (userId, amount, transactionId, narration, transactionDetails = {}) => {
     return await db.tx(async (db) => {
         // get wallet
         const wallet = await wallets(db).findOne({ userId });
@@ -75,16 +76,17 @@ export const debitWallet = async (userId, amount, transactionId, narration) => {
         const newBalance = parseFloat(String(wallet.balance - amount));
         // create wallet history for the new transaction
         await walletTransactions(db).insert({
+            amount,
+            transactionId,
             transactionType: 'debit',
             previousBalance: wallet.balance,
             newBalance: newBalance,
             walletId: wallet.id,
-            transactionDetails: '{}',
+            walletLabel: wallet.label,
+            transactionDetails: JSON.stringify(transactionDetails),
             narration: narration || `Wallet debit of ${wallet.currency}${amount}`,
             status: 'completed',
             id: 0,
-            amount,
-            transactionId
         });
         // update user wallet balance
         await wallets(db).update({ id: wallet.id }, { balance: newBalance });

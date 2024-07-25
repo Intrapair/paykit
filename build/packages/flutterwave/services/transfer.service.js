@@ -11,7 +11,7 @@ export default class Transfer {
     }
     async getRate(data) {
         const { sourceCurrency, destinationCurrency, amount } = data;
-        return await apiKit.get(`/transfers/rates?source_currency=${sourceCurrency}&destination_currency=${destinationCurrency}&amount=${amount || 50}`, {
+        return await apiKit.get(`/transfers/rates?source_currency=${sourceCurrency}&destination_currency=${destinationCurrency}&amount=${amount || 1}`, {
             headers: { ...this.headers },
         });
     }
