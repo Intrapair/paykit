@@ -15,15 +15,35 @@ describe('Wallet Model', () => {
 });
 
 const userId = faker.string.uuid();
+const userWithLabel = faker.string.uuid();
+const walletLabel = 'Test';
 
 describe('Wallet Actions', () => {
-    test('should create wallet', async () => {
+
+    test('should create wallet without label', async () => {
         const result = await walletActions.createWallet(userId);
+        expect(result).toBe(true);
+    });
+
+    test('should create wallet with label', async () => {
+        const result = await walletActions.createWallet(userWithLabel, 'NGN', 0, walletLabel);
         expect(result).toBe(true);
     });
 
     test('should get wallet', async () => {
         const [wallet, transaction] = await walletActions.getWallet(userId);
+        expect(wallet).toHaveProperty('id');
+        expect(transaction).toEqual([]);
+    });
+
+    test('should get wallet', async () => {
+        const [wallet, transaction] = await walletActions.getWallet(userWithLabel, walletLabel);
+        expect(wallet).toHaveProperty('id');
+        expect(transaction).toEqual([]);
+    });
+
+    test('should get wallet', async () => {
+        const [wallet, transaction] = await walletActions.getWallet(userWithLabel, walletLabel);
         expect(wallet).toHaveProperty('id');
         expect(transaction).toEqual([]);
     });
@@ -64,4 +84,26 @@ describe('Wallet Actions', () => {
         );
         expect(result).toBe(true);
     });
+
+    test('should get user wallet transaction', async () => {
+        const result = await walletActions.getWalletTransactions(userId);
+        expect(result.length).toBe(3);
+    });
+
+    test('should get user wallet transaction', async () => {
+        const result = await walletActions.getWalletTransactions(userWithLabel, 0, 10, walletLabel);
+        expect(result.length).toBe(0);
+    });
+
+    test('should get all user wallet balance', async () => {
+        const result = await walletActions.getWalletBalanceSum();
+        console.log('Wallet with label sum', result)
+        expect(result).toBe(400);
+    });
+
+    test('should get all user wallet with label balance', async () => {
+        const result = await walletActions.getWalletBalanceSum(walletLabel);
+        expect(result).toBe(0);
+    });
+
 });

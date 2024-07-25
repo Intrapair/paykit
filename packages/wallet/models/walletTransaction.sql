@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS walletTransactions (
     id INT(11) NOT NULL AUTO_INCREMENT,
     walletId INT(11) NOT NULL,
+    walletLabel VARCHAR(255) NULL DEFAULT NULL,
     amount DOUBLE NOT NULL,
     transactionType ENUM('credit', 'debit') NOT NULL,
     previousBalance DOUBLE NOT NULL,

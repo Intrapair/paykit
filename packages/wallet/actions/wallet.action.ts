@@ -1,3 +1,4 @@
+import { sql } from '@databases/mysql';
 import WalletTransactions from '../__generated__/walletTransactions';
 import Wallets from '../__generated__/wallets';
 import db, {
@@ -16,13 +17,15 @@ import db, {
 export const createWallet = async (
     userId: string,
     currency: string = 'NGN',
-    balance: number = 0
+    balance: number = 0,
+    label: string = null
 ): Promise<boolean> => {
     const wallet = {
         currency: currency.toUpperCase(),
         id: 0,
         userId,
         balance,
+        label
     };
     await wallets(db).insert(wallet);
     return true;
@@ -31,12 +34,14 @@ export const createWallet = async (
 /**
  * Get user wallet balance and top 10 transactions in DESC order
  * @param userId User uuid
+ * @param label Wallet label
  * @returns Array of wallet and transactions
  */
 export const getWallet = async (
-    userId: string
-): Promise<(Wallets | WalletTransactions[])[]> => {
-    const wallet = await wallets(db).findOne({ userId });
+    userId: string,
+    label: string = null
+): Promise<[Wallets, WalletTransactions[]]> => {
+    const wallet = await wallets(db).findOne({ userId, label });
     if (!wallet) throw new Error('Wallet not found');
     let transactions = await walletTransactions(db)
         .find({ walletId: wallet.id })
@@ -55,10 +60,11 @@ export const getWallet = async (
 /**
  * Get user wallet balance only
  * @param userId the unique id of the user
+ * @param label Wallet label
  * @returns wallet balance
  */
-export const getWalletBalance = async (userId: string) => {
-    const wallet = await wallets(db).findOne({ userId });
+export const getWalletBalance = async (userId: string, label: string = null) => {
+    const wallet = await wallets(db).findOne({ userId, label });
     if (!wallet) throw new Error('Wallet not found');
     return wallet.balance;
 };
@@ -68,18 +74,50 @@ export const getWalletBalance = async (userId: string) => {
  * @param userId the unique id of the user
  * @param lastId the last id of the last transaction returned in previous call. Default is 0
  * @param limit the maximum number of transactions to return. Default is 10
+ * @optional walletLabel Wallet label
  * @returns Array of transactions
  */
 export const getWalletTransactions = async (
     userId: string,
     lastId: number = 0,
-    limit: number = 10
+    limit: number = 10,
+    walletLabel: string = null
 ): Promise<WalletTransactions[]> => {
-    const wallet = await wallets(db).findOne({ userId });
+    const wallet = await wallets(db).findOne({ userId, label: walletLabel });
     if (!wallet) throw new Error('Wallet not found');
     let transactions = await walletTransactions(db)
         .find({
             walletId: wallet.id,
+            ...(lastId ? { id: greaterThan(lastId) } : {}),
+            walletLabel,
+        })
+        .orderByDesc('id')
+        .limit(limit);
+    transactions = transactions.map((row: any) => {
+        let d = {
+            ...row,
+            transactionDetails: JSON.parse(row.transactionDetails),
+        };
+        return d;
+    });
+    return transactions;
+};
+
+/**
+ * Get all wallet transactions in DESC order with pagination support
+ * @param lastId the last id of the last transaction returned in previous call. Default is 0
+ * @param limit the maximum number of transactions to return. Default is 10
+ * @param walletLabel Wallet label
+ * @returns Array of transactions
+ */
+export const getAllWalletTransactions = async (
+    lastId: number = 0,
+    limit: number = 10,
+    walletLabel: string = null
+): Promise<WalletTransactions[]> => {
+    let transactions = await walletTransactions(db)
+        .find({
+            ...(walletLabel ? { walletLabel } : {}),
             ...(lastId ? { id: greaterThan(lastId) } : {}),
         })
         .orderByDesc('id')
@@ -92,4 +130,18 @@ export const getWalletTransactions = async (
         return d;
     });
     return transactions;
+};
+
+/**
+ * Get all wallet balance summation 
+ * @param walletLabel Wallet label
+ * @returns Array of transactions
+ */
+export const getWalletBalanceSum = async (
+    walletLabel: string = null
+): Promise<number> => {
+    // const condition = ;
+    const filter = sql.__dangerous__rawValue(`${walletLabel ? `= '${walletLabel}'` : `IS ${walletLabel}` }`)
+    const walletSum = await db.query(sql`SELECT SUM(balance) as balance FROM wallets WHERE label ${filter}`);
+    return walletSum[0].balance;
 };

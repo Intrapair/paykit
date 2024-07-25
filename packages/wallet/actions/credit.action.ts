@@ -32,6 +32,7 @@ export const credit = async (
             previousBalance: wallet.balance,
             newBalance: newBalance,
             walletId: wallet.id,
+            walletLabel: wallet.label,
             transactionDetails: JSON.stringify(transactionDetails),
             status: 'completed',
             narration:
@@ -78,6 +79,7 @@ export const revertDebit = async (transactionId: string): Promise<boolean> => {
             previousBalance: wallet.balance,
             newBalance: newBalance,
             walletId: wallet.id,
+            walletLabel: wallet.label,
             status: 'completed',
             narration: `Revert: ${transaction.narration}`,
             id: 0,

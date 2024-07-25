@@ -33,6 +33,7 @@ export const initiateDebit = async (
             previousBalance: wallet.balance,
             newBalance: newBalance,
             walletId: wallet.id,
+            walletLabel: wallet.label,
             transactionDetails: JSON.stringify(transactionDetails),
             narration:
                 narration || `Wallet debit of ${wallet.currency}${amount}`,
@@ -105,6 +106,7 @@ export const debitWallet = async (
             previousBalance: wallet.balance,
             newBalance: newBalance,
             walletId: wallet.id,
+            walletLabel: wallet.label,
             transactionDetails: JSON.stringify(transactionDetails),
             narration:
                 narration || `Wallet debit of ${wallet.currency}${amount}`,
