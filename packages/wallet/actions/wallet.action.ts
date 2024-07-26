@@ -5,6 +5,7 @@ import db, {
     wallets,
     walletTransactions,
     greaterThan,
+    lessThan,
 } from '../config/database.config';
 
 /**
@@ -25,7 +26,7 @@ export const createWallet = async (
         id: 0,
         userId,
         balance,
-        label
+        label,
     };
     await wallets(db).insert(wallet);
     return true;
@@ -63,7 +64,10 @@ export const getWallet = async (
  * @param label Wallet label
  * @returns wallet balance
  */
-export const getWalletBalance = async (userId: string, label: string = null) => {
+export const getWalletBalance = async (
+    userId: string,
+    label: string = null
+) => {
     const wallet = await wallets(db).findOne({ userId, label });
     if (!wallet) throw new Error('Wallet not found');
     return wallet.balance;
@@ -111,17 +115,25 @@ export const getWalletTransactions = async (
  * @returns Array of transactions
  */
 export const getAllWalletTransactions = async (
-    lastId: number = 0,
+    lastId: number = Number.MAX_SAFE_INTEGER,
     limit: number = 10,
     walletLabel: string = null
-): Promise<WalletTransactions[]> => {
+): Promise<[WalletTransactions[], { [key: string]: number | null }]> => {
+    const total = await walletTransactions(db).count();
+
     let transactions = await walletTransactions(db)
         .find({
             ...(walletLabel ? { walletLabel } : {}),
-            ...(lastId ? { id: greaterThan(lastId) } : {}),
+            ...(lastId
+                ? {
+                      id: lessThan(
+                          lastId === 0 ? Number.MAX_SAFE_INTEGER : lastId
+                      ),
+                  }
+                : {}),
         })
         .orderByDesc('id')
-        .limit(limit);
+        .limit(limit + 1);
     transactions = transactions.map((row: any) => {
         let d = {
             ...row,
@@ -129,11 +141,34 @@ export const getAllWalletTransactions = async (
         };
         return d;
     });
-    return transactions;
+
+    const hasNextPage = transactions.length > limit;
+    if (hasNextPage) {
+        transactions.pop(); // Remove the extra item
+    }
+
+    // Calculate total pages
+    const totalPages = Math.ceil(total / limit);
+
+    // Determine previous and next page
+    const currentPage = Math.ceil((total - transactions[0].id + 1) / limit);
+    const prevPage = currentPage > 1 ? currentPage - 1 : null;
+    const nextPage = hasNextPage ? currentPage + 1 : null;
+
+    return [
+        transactions,
+        {
+            totalPages,
+            currentPage,
+            prevPage,
+            nextPage,
+            totalItems: total,
+        },
+    ];
 };
 
 /**
- * Get all wallet balance summation 
+ * Get all wallet balance summation
  * @param walletLabel Wallet label
  * @returns Array of transactions
  */
@@ -141,7 +176,11 @@ export const getWalletBalanceSum = async (
     walletLabel: string = null
 ): Promise<number> => {
     // const condition = ;
-    const filter = sql.__dangerous__rawValue(`${walletLabel ? `= '${walletLabel}'` : `IS ${walletLabel}` }`)
-    const walletSum = await db.query(sql`SELECT SUM(balance) as balance FROM wallets WHERE label ${filter}`);
+    const filter = sql.__dangerous__rawValue(
+        `${walletLabel ? `= '${walletLabel}'` : `IS ${walletLabel}`}`
+    );
+    const walletSum = await db.query(
+        sql`SELECT SUM(balance) as balance FROM wallets WHERE label ${filter}`
+    );
     return walletSum[0].balance;
 };
