@@ -122,9 +122,17 @@ describe('Wallet Actions', () => {
     });
 
     test('should get all wallet transaction', async () => {
-        const [transactions, pagination] =
+        const { transactions, pagination } =
             await walletActions.getAllWalletTransactions(0, 10);
         console.log('All wallet transactions', transactions);
+        console.log('Pagination', pagination);
+        expect(transactions.length).toBe(3);
+    });
+
+    test('should get all wallet label transaction', async () => {
+        const { transactions, pagination } =
+            await walletActions.getAllWalletTransactions(0, 10, userWithLabel);
+        console.log('All wallet label transactions', transactions);
         console.log('Pagination', pagination);
         expect(transactions.length).toBe(3);
     });

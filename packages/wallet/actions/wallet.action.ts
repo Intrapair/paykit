@@ -118,10 +118,16 @@ export const getAllWalletTransactions = async (
     lastId: number = null,
     limit: number = 10,
     walletLabel: string = null
-): Promise<[WalletTransactions[], { [key: string]: number | null }]> => {
+): Promise<{
+    transactions: WalletTransactions[];
+    pagination: { [key: string]: number | null };
+}> => {
+    const whereClause = sql.__dangerous__rawValue(
+        `${walletLabel ? `WHERE walletLabel = '${walletLabel}'` : ''}`
+    );
     // get total count and max ID
     const countAndMaxId = await db.query(
-        sql`SELECT COUNT(*) AS total, MAX(id) as maxId FROM walletTransactions`
+        sql`SELECT COUNT(*) AS total, MAX(id) as maxId FROM walletTransactions ${whereClause}`
     );
     const total: number = countAndMaxId[0].total;
     const maxId: number = countAndMaxId[0].maxId;
@@ -160,8 +166,11 @@ export const getAllWalletTransactions = async (
         nextPageLastId: number | null;
 
     if (transactions.length > 0) {
+        const andClause = sql.__dangerous__rawValue(
+            `${walletLabel ? `AND walletLabel = ${walletLabel}` : ''}`
+        );
         const itemsAfterLastId = await db.query(
-            sql`SELECT COUNT(*) AS count FROM walletTransactions WHERE id >= ${transactions[0].id}`
+            sql`SELECT COUNT(*) AS count FROM walletTransactions WHERE id >= ${transactions[0].id} ${andClause}`
         );
         const itemsAfter = itemsAfterLastId[0].count;
 
@@ -178,9 +187,9 @@ export const getAllWalletTransactions = async (
         nextPageLastId = null;
     }
 
-    return [
+    return {
         transactions,
-        {
+        pagination: {
             totalPages,
             currentPage,
             prevPage,
@@ -188,7 +197,7 @@ export const getAllWalletTransactions = async (
             nextPageLastId,
             totalItems: total,
         },
-    ];
+    };
 };
 
 /**
