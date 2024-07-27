@@ -115,11 +115,14 @@ export const getWalletTransactions = async (
  * @returns Array of transactions
  */
 export const getAllWalletTransactions = async (
-    lastId: number = Number.MAX_SAFE_INTEGER,
+    lastId: number = null,
     limit: number = 10,
     walletLabel: string = null
 ): Promise<[WalletTransactions[], { [key: string]: number | null }]> => {
-    const total = await walletTransactions(db).count();
+    // get total count and max ID
+    const countAndMaxId = await db.query(sql`SELECT COUNT(*) AS total, MAX(id) as maxId FROM walletTransactions`);
+    const total: number = countAndMaxId[0].total;
+    const maxId: number = countAndMaxId[0].maxId;
 
     let transactions = await walletTransactions(db)
         .find({
@@ -127,7 +130,7 @@ export const getAllWalletTransactions = async (
             ...(lastId
                 ? {
                       id: lessThan(
-                          lastId === 0 ? Number.MAX_SAFE_INTEGER : lastId
+                          !lastId ? maxId : lastId
                       ),
                   }
                 : {}),
@@ -150,10 +153,23 @@ export const getAllWalletTransactions = async (
     // Calculate total pages
     const totalPages = Math.ceil(total / limit);
 
-    // Determine previous and next page
-    const currentPage = Math.ceil((total - transactions[0].id + 1) / limit);
-    const prevPage = currentPage > 1 ? currentPage - 1 : null;
-    const nextPage = hasNextPage ? currentPage + 1 : null;
+    // Determine current page, previous and next page
+    let currentPage: number | null, prevPage: number | null, nextPage: number | null, nextPageLastId: number | null;
+
+    if (transactions.length > 0) {
+        const itemsAfterLastId = await db.query(sql`SELECT COUNT(*) AS count FROM walletTransactions WHERE id >= ${transactions[0].id}`);
+        const itemsAfter = itemsAfterLastId[0].count;
+
+        currentPage = Math.ceil(itemsAfter / limit);
+        prevPage = currentPage > 1 ? currentPage - 1 : null;
+        nextPage = hasNextPage ? currentPage + 1 : null;
+        nextPageLastId = hasNextPage ? transactions[transactions.length - 1].id : null;
+    } else {
+        currentPage = 1;
+        prevPage = null;
+        nextPage = null;
+        nextPageLastId = null;
+    }
 
     return [
         transactions,
@@ -162,6 +178,7 @@ export const getAllWalletTransactions = async (
             currentPage,
             prevPage,
             nextPage,
+            nextPageLastId,
             totalItems: total,
         },
     ];

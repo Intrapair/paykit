@@ -124,6 +124,8 @@ describe('Wallet Actions', () => {
     test('should get all wallet transaction', async () => {
         const [transactions, pagination] =
             await walletActions.getAllWalletTransactions(0, 10);
+        console.log('All wallet transactions', transactions);
+        console.log('Pagination', pagination);
         expect(transactions.length).toBe(3);
     });
 });
