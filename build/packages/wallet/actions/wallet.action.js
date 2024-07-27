@@ -1,5 +1,5 @@
 import { sql } from '@databases/mysql';
-import db, { wallets, walletTransactions, greaterThan, } from '../config/database.config';
+import db, { wallets, walletTransactions, greaterThan, lessThan, } from '../config/database.config';
 /**
  * Create wallet for user
  * @param userId The unique id of the user
@@ -13,7 +13,7 @@ export const createWallet = async (userId, currency = 'NGN', balance = 0, label 
         id: 0,
         userId,
         balance,
-        label
+        label,
     };
     await wallets(db).insert(wallet);
     return true;
@@ -89,14 +89,23 @@ export const getWalletTransactions = async (userId, lastId = 0, limit = 10, wall
  * @param walletLabel Wallet label
  * @returns Array of transactions
  */
-export const getAllWalletTransactions = async (lastId = 0, limit = 10, walletLabel = null) => {
+export const getAllWalletTransactions = async (lastId = null, limit = 10, walletLabel = null) => {
+    const whereClause = sql.__dangerous__rawValue(`${walletLabel ? `WHERE walletLabel = '${walletLabel}'` : ''}`);
+    // get total count and max ID
+    const countAndMaxId = await db.query(sql `SELECT COUNT(*) AS total, MAX(id) as maxId FROM walletTransactions ${whereClause}`);
+    const total = countAndMaxId[0].total;
+    const maxId = countAndMaxId[0].maxId;
     let transactions = await walletTransactions(db)
         .find({
         ...(walletLabel ? { walletLabel } : {}),
-        ...(lastId ? { id: greaterThan(lastId) } : {}),
+        ...(lastId
+            ? {
+                id: lessThan(!lastId ? maxId : lastId),
+            }
+            : {}),
     })
         .orderByDesc('id')
-        .limit(limit);
+        .limit(limit + 1);
     transactions = transactions.map((row) => {
         let d = {
             ...row,
@@ -104,7 +113,42 @@ export const getAllWalletTransactions = async (lastId = 0, limit = 10, walletLab
         };
         return d;
     });
-    return transactions;
+    const hasNextPage = transactions.length > limit;
+    if (hasNextPage) {
+        transactions.pop(); // Remove the extra item
+    }
+    // Calculate total pages
+    const totalPages = Math.ceil(total / limit);
+    // Determine current page, previous and next page
+    let currentPage, prevPage, nextPage, nextPageLastId;
+    if (transactions.length > 0) {
+        const andClause = sql.__dangerous__rawValue(`${walletLabel ? `AND walletLabel = ${walletLabel}` : ''}`);
+        const itemsAfterLastId = await db.query(sql `SELECT COUNT(*) AS count FROM walletTransactions WHERE id >= ${transactions[0].id} ${andClause}`);
+        const itemsAfter = itemsAfterLastId[0].count;
+        currentPage = Math.ceil(itemsAfter / limit);
+        prevPage = currentPage > 1 ? currentPage - 1 : null;
+        nextPage = hasNextPage ? currentPage + 1 : null;
+        nextPageLastId = hasNextPage
+            ? transactions[transactions.length - 1].id
+            : null;
+    }
+    else {
+        currentPage = 1;
+        prevPage = null;
+        nextPage = null;
+        nextPageLastId = null;
+    }
+    return {
+        transactions,
+        pagination: {
+            totalPages,
+            currentPage,
+            prevPage,
+            nextPage,
+            nextPageLastId,
+            totalItems: total,
+        },
+    };
 };
 /**
  * Get all wallet balance summation

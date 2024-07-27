@@ -1,9 +1,9 @@
 // db and table configs, should be extensible
 import 'dotenv/config'; // load env variables
 import createConnectionPool, { sql } from '@databases/mysql';
-import tables, { greaterThan } from '@databases/mysql-typed';
+import tables, { greaterThan, lessThan } from '@databases/mysql-typed';
 import { serializeValue } from '../__generated__';
-export { sql, greaterThan };
+export { sql, greaterThan, lessThan };
 // create db connection pool
 // const startTimes = new Map<SQLQuery, number>();
 const db = createConnectionPool({
