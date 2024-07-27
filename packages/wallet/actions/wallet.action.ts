@@ -120,7 +120,9 @@ export const getAllWalletTransactions = async (
     walletLabel: string = null
 ): Promise<[WalletTransactions[], { [key: string]: number | null }]> => {
     // get total count and max ID
-    const countAndMaxId = await db.query(sql`SELECT COUNT(*) AS total, MAX(id) as maxId FROM walletTransactions`);
+    const countAndMaxId = await db.query(
+        sql`SELECT COUNT(*) AS total, MAX(id) as maxId FROM walletTransactions`
+    );
     const total: number = countAndMaxId[0].total;
     const maxId: number = countAndMaxId[0].maxId;
 
@@ -129,9 +131,7 @@ export const getAllWalletTransactions = async (
             ...(walletLabel ? { walletLabel } : {}),
             ...(lastId
                 ? {
-                      id: lessThan(
-                          !lastId ? maxId : lastId
-                      ),
+                      id: lessThan(!lastId ? maxId : lastId),
                   }
                 : {}),
         })
@@ -154,16 +154,23 @@ export const getAllWalletTransactions = async (
     const totalPages = Math.ceil(total / limit);
 
     // Determine current page, previous and next page
-    let currentPage: number | null, prevPage: number | null, nextPage: number | null, nextPageLastId: number | null;
+    let currentPage: number | null,
+        prevPage: number | null,
+        nextPage: number | null,
+        nextPageLastId: number | null;
 
     if (transactions.length > 0) {
-        const itemsAfterLastId = await db.query(sql`SELECT COUNT(*) AS count FROM walletTransactions WHERE id >= ${transactions[0].id}`);
+        const itemsAfterLastId = await db.query(
+            sql`SELECT COUNT(*) AS count FROM walletTransactions WHERE id >= ${transactions[0].id}`
+        );
         const itemsAfter = itemsAfterLastId[0].count;
 
         currentPage = Math.ceil(itemsAfter / limit);
         prevPage = currentPage > 1 ? currentPage - 1 : null;
         nextPage = hasNextPage ? currentPage + 1 : null;
-        nextPageLastId = hasNextPage ? transactions[transactions.length - 1].id : null;
+        nextPageLastId = hasNextPage
+            ? transactions[transactions.length - 1].id
+            : null;
     } else {
         currentPage = 1;
         prevPage = null;
