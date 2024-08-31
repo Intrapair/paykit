@@ -122,7 +122,7 @@ export const getAllWalletTransactions = async (lastId = null, limit = 10, wallet
     // Determine current page, previous and next page
     let currentPage, prevPage, nextPage, nextPageLastId;
     if (transactions.length > 0) {
-        const andClause = sql.__dangerous__rawValue(`${walletLabel ? `AND walletLabel = ${walletLabel}` : ''}`);
+        const andClause = sql.__dangerous__rawValue(`${walletLabel ? `AND walletLabel = '${walletLabel}'` : ''}`);
         const itemsAfterLastId = await db.query(sql `SELECT COUNT(*) AS count FROM walletTransactions WHERE id >= ${transactions[0].id} ${andClause}`);
         const itemsAfter = itemsAfterLastId[0].count;
         currentPage = Math.ceil(itemsAfter / limit);
