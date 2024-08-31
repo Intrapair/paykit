@@ -97,7 +97,7 @@ export const getAllWalletTransactions = async (lastId = null, limit = 10, wallet
     const maxId = countAndMaxId[0].maxId;
     let transactions = await walletTransactions(db)
         .find({
-        ...(walletLabel ? { walletLabel } : {}),
+        ...(walletLabel ? { walletLabel: walletLabel } : {}),
         ...(lastId
             ? {
                 id: lessThan(!lastId ? maxId : lastId),

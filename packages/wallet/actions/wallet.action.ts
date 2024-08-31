@@ -134,7 +134,7 @@ export const getAllWalletTransactions = async (
 
     let transactions = await walletTransactions(db)
         .find({
-            ...(walletLabel ? { walletLabel } : {}),
+            ...(walletLabel ? { walletLabel: walletLabel } : {}),
             ...(lastId
                 ? {
                       id: lessThan(!lastId ? maxId : lastId),
