@@ -167,7 +167,7 @@ export const getAllWalletTransactions = async (
 
     if (transactions.length > 0) {
         const andClause = sql.__dangerous__rawValue(
-            `${walletLabel ? `AND walletLabel = ${walletLabel}` : ''}`
+            `${walletLabel ? `AND walletLabel = '${walletLabel}'` : ''}`
         );
         const itemsAfterLastId = await db.query(
             sql`SELECT COUNT(*) AS count FROM walletTransactions WHERE id >= ${transactions[0].id} ${andClause}`
