@@ -115,6 +115,7 @@ export const getWalletTransactions = async (
  * @returns Array of transactions
  */
 export const getAllWalletTransactions = async (
+    filter: any = null,
     lastId: number = null,
     limit: number = 10,
     walletLabel: string = null
@@ -122,9 +123,29 @@ export const getAllWalletTransactions = async (
     transactions: WalletTransactions[];
     pagination: { [key: string]: number | null };
 }> => {
-    const whereClause = sql.__dangerous__rawValue(
+    const { search, from, to } = filter;
+
+    let whereClause = sql.__dangerous__rawValue(
         `${walletLabel ? `WHERE walletLabel = '${walletLabel}'` : ''}`
     );
+
+    let searchClause;
+    if (search) {
+        searchClause = sql.__dangerous__rawValue(
+            `AND transactionType = '${search}'`
+        );
+    }
+
+    let fromClause;
+    if (from) {
+        fromClause = sql.__dangerous__rawValue(`AND createdAt >= '${from}'`);
+    }
+
+    let toClause;
+    if (to) {
+        toClause = sql.__dangerous__rawValue(`AND createdAt <= '${to}'`);
+    }
+
     // get total count and max ID
     const countAndMaxId = await db.query(
         sql`SELECT COUNT(*) AS total, MAX(id) as maxId FROM walletTransactions ${whereClause}`
@@ -132,17 +153,36 @@ export const getAllWalletTransactions = async (
     const total: number = countAndMaxId[0].total;
     const maxId: number = countAndMaxId[0].maxId;
 
-    let transactions = await walletTransactions(db)
-        .find({
-            ...(walletLabel ? { walletLabel } : {}),
-            ...(lastId
-                ? {
-                      id: lessThan(!lastId ? maxId : lastId),
-                  }
-                : {}),
-        })
-        .orderByDesc('id')
-        .limit(limit + 1);
+    // let transactions = await walletTransactions(db)
+    //     .find({
+    //         ...(walletLabel ? { walletLabel } : {}),
+    //         ...(lastId
+    //             ? {
+    //                   id: lessThan(!lastId ? maxId : lastId),
+    //               }
+    //             : {}),
+    //     })
+    //     .orderByDesc('id')
+    //     .limit(limit + 1);
+
+    let transactions = await db.query(
+        sql`SELECT * FROM walletTransactions 
+            WHERE id < ${lastId || maxId} 
+            ${walletLabel ? sql`AND walletLabel = ${walletLabel}` : sql``} 
+            ${searchClause || sql``}
+            ${fromClause || sql``}
+            ${toClause || sql``} 
+            ORDER BY id DESC 
+            LIMIT ${limit + 1}`
+    );
+
+    // let transactions = await db.query(sql`
+    //     SELECT * FROM walletTransactions
+    //     WHERE id < ${lastId || maxId}
+    //     ${walletLabel ? sql`AND walletLabel = ${walletLabel}` : sql``}
+    //     ORDER BY id DESC
+    // `);
+
     transactions = transactions.map((row: any) => {
         let d = {
             ...row,

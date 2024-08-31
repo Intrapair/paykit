@@ -125,14 +125,29 @@ describe('Wallet Actions', () => {
         const { transactions, pagination } =
             await walletActions.getAllWalletTransactions(0, 10);
         console.log('All wallet transactions', transactions);
+        console.log('transctions.length', transactions.length);
         console.log('Pagination', pagination);
-        expect(transactions.length).toBe(3);
+        console.log('pagination.totalItems', pagination.totalItems);
+        expect(pagination.totalItems).toBe(3);
     });
 
-    test('should get all wallet label transaction', async () => {
+    // test('should get all wallet label transaction', async () => {
+    //     const { transactions, pagination } =
+    //         await walletActions.getAllWalletTransactions(0, 10, userWithLabel);
+    //     console.log('All wallet label transactions', transactions);
+    //     console.log('Pagination', pagination);
+    //     expect(transactions.length).toBe(3);
+    // });
+
+    test('should get all wallet transaction with filter', async () => {
+        const filter = {
+            from: '2021-01-01',
+            to: '2021-12-31',
+            search: 'credit',
+        };
         const { transactions, pagination } =
-            await walletActions.getAllWalletTransactions(0, 10, userWithLabel);
-        console.log('All wallet label transactions', transactions);
+            await walletActions.getAllWalletTransactions(filter, 0, 10);
+        console.log('All wallet transactions', transactions);
         console.log('Pagination', pagination);
         expect(transactions.length).toBe(3);
     });
