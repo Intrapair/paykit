@@ -9,7 +9,7 @@ type RatesPayload = {
 type CreateTransferPayload = {
     account_bank: string;
     account_number: string;
-    amount: string;
+    amount: number;
     currency: string;
     beneficiary_name: string;
     reference?: string;
