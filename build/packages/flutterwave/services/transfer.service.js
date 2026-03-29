@@ -20,4 +20,9 @@ export default class Transfer {
             headers: { ...this.headers },
         });
     }
+    async createTransfer(payload) {
+        return await apiKit.post('/transfers', payload, {
+            headers: { ...this.headers },
+        });
+    }
 }

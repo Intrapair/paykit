@@ -6,6 +6,28 @@ type RatesPayload = {
     amount?: number;
 };
 
+type CreateTransferPayload = {
+    account_bank: string;
+    account_number: string;
+    amount: string;
+    currency: string;
+    beneficiary_name: string;
+    reference?: string;
+    debit_currency: string;
+    narration: string;
+    meta?: {
+        [key: string]: any;
+    };
+};
+
+type CreateTransferResponse = {
+    status: string;
+    message: string;
+    data: {
+        [key: string]: any;
+    };
+};
+
 export default class Transfer {
     private apiKeys: ApiKeys = {
         publicKey: '',
@@ -35,5 +57,15 @@ export default class Transfer {
         return await apiKit.get(`/banks/${bank}`, {
             headers: { ...this.headers },
         });
+    }
+
+    async createTransfer(payload: CreateTransferPayload) {
+        return await apiKit.post<CreateTransferResponse>(
+            '/transfers',
+            payload,
+            {
+                headers: { ...this.headers },
+            }
+        );
     }
 }
